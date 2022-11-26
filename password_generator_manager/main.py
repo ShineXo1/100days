@@ -38,7 +38,7 @@ def save():
     }
     
     if len(website_input) == 0 or len(password_input) == 0 or len(login_input) == 0:
-        messagebox.showinfo(title='Oops', message="Please don't leave any fields empty!")
+        messagebox.showinfo(title='⚠⚠!Oops!⚠⚠', message="Please don't leave any fields empty!")
     else:
         try:
             with open("data.json", 'r') as data_file:
@@ -58,6 +58,26 @@ def save():
             login_entry.delete(0, END)
             password_entry.delete(0, END)
 
+
+# ---------------------------- SEARCH OLD DATA ------------------------------- #
+def search_website():
+    website_input = website_entry.get()
+    try:
+        with open("data.json", 'r') as data_file:
+            # read old data
+            data = json.load(data_file)
+    except FileNotFoundError:
+        messagebox.showinfo(title='⚠Oops⚠', message='No Data File')
+    else:
+        if website_input in data:
+            info_message = data[website_input]
+            messagebox.showinfo(title='☠!Private Info!☠', message=f'Your email:        {info_message["email"]}'
+                                                                    f'\nYour password: {info_message["password"]}')
+            pyperclip.copy(info_message['password'])
+        else:
+            messagebox.showinfo(title='⚠Oops⚠', message=f'{website_input} not in list.')
+        
+
 # ---------------------------- UI SETUP ------------------------------- #
 
 
@@ -70,11 +90,14 @@ logo = PhotoImage(file='logo.png')
 canvas.create_image(100, 100, image=logo)
 canvas.grid(column=1, row=0)
 
-website_entry = Entry(width=52)
-website_entry.grid(column=1, row=1, columnspan=2)
+website_entry = Entry(width=33)
+website_entry.grid(column=1, row=1)
 website_entry.focus()
 website_label = Label(text='Website:')
 website_label.grid(column=0, row=1)
+website_search = Button(text='Search', command=search_website, width=15)
+website_search.grid(column=2, row=1)
+
 
 login_label = Label(text='Email/Username:')
 login_label.grid(column=0, row=2)
@@ -85,7 +108,7 @@ password_label = Label(text='Password:')
 password_label.grid(column=0, row=3)
 password_entry = Entry(width=33)
 password_entry.grid(column=1, row=3)
-generate_password = Button(text='Generate Password', command=generate_password)
+generate_password = Button(text='Generate Password', command=generate_password, width=15)
 generate_password.grid(column=2, row=3)
 
 add_btn = Button(width=44, text='Add', command=save)
