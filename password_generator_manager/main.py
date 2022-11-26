@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from random import choice, randint, shuffle
 import pyperclip
+import json
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
 
@@ -29,20 +30,33 @@ def save():
     website_input = website_entry.get()
     login_input = login_entry.get()
     password_input = password_entry.get()
+    new_data = {
+        website_input: {
+            'email': login_input,
+            'password': password_input,
+        }
+    }
     
     if len(website_input) == 0 or len(password_input) == 0 or len(login_input) == 0:
         messagebox.showinfo(title='Oops', message="Please don't leave any fields empty!")
     else:
-        is_ok = messagebox.askokcancel(title=website_input, message=f'These are details that you entered: '
-                                                                    f'\nEmail: {login_input}'
-                                                                    f'\nPassword: {password_input} '
-                                                                    f'\nIs it ok to save?')
-        if is_ok:
-            with open("data.txt", 'a') as f:
-                f.write(f'{website_input} | {login_input} | {password_input}\n')
-                website_entry.delete(0, END)
-                login_entry.delete(0, END)
-                password_entry.delete(0, END)
+        try:
+            with open("data.json", 'r') as data_file:
+                # read old data
+                data = json.load(data_file)
+        except FileNotFoundError:
+            with open('data.json', 'w') as data_file:
+                json.dump(new_data, data_file, indent=4)
+        else:
+            data.update(new_data)
+            
+            with open('data.json', 'w') as data_file:
+                #     saving updated data
+                json.dump(data, data_file, indent=4)
+        finally:
+            website_entry.delete(0, END)
+            login_entry.delete(0, END)
+            password_entry.delete(0, END)
 
 # ---------------------------- UI SETUP ------------------------------- #
 
