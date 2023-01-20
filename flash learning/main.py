@@ -1,5 +1,5 @@
 #!/usr/bin/python
-  # -*- coding: utf8 -*-
+# -*- coding: utf8 -*-
 import random
 from tkinter import *
 
@@ -10,8 +10,6 @@ import pandas as pd
 BACKGROUND_COLOR = "#B1DDC6"
 current_card = {}
 to_learn = {}
-# data = pandas.read_csv('data/500 fi-en.csv')
-# to_learn = data.to_dict(orient='records')
 try:
     with open('data/words_to_learn.csv', 'r', encoding='UTF-8') as f:
         df = pd.read_csv(f)
@@ -20,8 +18,8 @@ except FileNotFoundError:
         original_data = pd.read_csv(f)
         to_learn = original_data.to_dict(orient='records')
 else:
-    to_learn = df.to_dict(orient='records')
-
+    with open('data/words_to_learn.csv', 'r', encoding='UTF-8') as f:
+        to_learn = df.to_dict(orient='records')
 
 
 def next_card():
@@ -61,7 +59,7 @@ v_button.grid(row=1, column=1)
 x_image = PhotoImage(file='images/wrong.png')
 x_button = Button(image=x_image, highlightthickness=0, command=flip_card)
 x_button.grid(row=1, column=0)
-#creating front and back images
+# creating front and back images
 front_image = PhotoImage(file='images/card_front.png')
 back_image = PhotoImage(file='images/card_back.png')
 card_front_img = canvas.create_image(400, 263, image=front_image)
@@ -69,5 +67,7 @@ card_title = canvas.create_text(400, 150, text='Title', font=('Ariel', 40, 'ital
 card_word = canvas.create_text(400, 263, text='word', font=('Ariel', 60, 'bold'))
 canvas.config(bg=BACKGROUND_COLOR, highlightthickness=0)
 canvas.grid(column=0, row=0, columnspan=2)
+
+next_card()
 
 window.mainloop()
